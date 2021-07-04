@@ -1,32 +1,64 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+    v-app
+      Navbar(:links="linksComputed")
+      v-main
+        router-view
+      v-snackbar(
+        v-model="$store.getters.checkShow"
+        :multi-line="true"
+        :right="true"
+        :top="true"
+        :timeout="6000"
+        :color="$store.getters.checkVariant"
+
+      )
+        .d-flex.justify-space-between.align-center
+          .subtitle-1 {{$store.getters.checkMessage}}
+          v-btn(
+            dark
+            text
+            @click="$store.commit('updateSnackbar', {show: false})"
+          )
+            | Close
+      Footer(:links="linksComputed")
+
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+import Navbar from './components/layout/Navbar'
+import Footer from './components/partials/Footer'
+export default {
+  name: 'App',
+  components: {
+    Navbar,
+    Footer
+  },
+  data: () => ({
+    show:this.$store.getters.checkshow,
+    variant:'',
+    message:''
+  }),
+  computed:{
+    linksComputed(){
+      return[
+        {
+          label: 'Home',
+          url:'/'
+        },
+        {
+          label: 'Browse',
+          url:'/browse'
+        },
+        {
+          label: 'Saved Items',
+          url:'/saved-items'
+        },
+        {
+          label: this.$store.getters.isLoggedIn ? 'Logout':'Login',
+          url:'/login'
+        },
+      ]
+    },
+  },
+};
+</script>
