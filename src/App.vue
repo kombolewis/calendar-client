@@ -46,19 +46,11 @@ export default {
           url:'/'
         },
         {
-          label: 'Browse',
-          url:'/browse'
-        },
-        {
-          label: 'Saved Items',
-          url:'/saved-items'
-        },
-        {
           label: this.$store.getters.isLoggedIn ? 'Logout':'Login',
           url:'/login'
         },
       ]
     },
   },
-};
+}
 </script>

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-const fb = {}
+
 export default {
 		name:'Navbar',
 		props:['links'],
@@ -26,12 +26,9 @@ export default {
 				}
 			},
 			logout(){
-				fb.auth().signOut()
+				this.$store.dispatch('logoutUser')
 				.then(() => {
-					return this.$store.dispatch('logoutUser')
-				})
-				.then(() => {
-					return this.$router.push({name:'Home'})
+					return this.$router.push({name:'Login'})
 				})
 				.then(() => {
 					this.$store.commit('updateSnackbar', {

@@ -27,3 +27,38 @@
             v-spacer
             v-btn(color="info"  @click="login") Login
 </template>
+
+<script>
+import {mapActions} from 'vuex'
+export default {
+    name: 'Login',
+    data: () => ({
+      showPassword: false,
+      email:'',
+      password:'',
+    }),
+    methods:{
+      ...mapActions(['loginUser']),
+      login(){
+        this.loginUser({email:this.email,password:this.password})
+        .then(() => {
+          return this.$router.push({name:'Home'})
+        })
+        .then(() => {
+          this.$store.commit('updateSnackbar', {
+            show:true,
+            variant:'success',
+            message:'Login successful'
+          })
+        })
+        .catch(() => {
+          this.$store.commit('updateSnackbar', {
+            show:true,
+            variant:'error',
+            message:'Login Failed'
+          })
+        })
+      }
+    }
+  }
+</script>
