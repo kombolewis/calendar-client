@@ -21,24 +21,35 @@
                 row-height='20'
               )
 
-              v-dialog(ref='dialog' v-model='modal' :return-value.sync='start_date' persistent='' width='290px')
+              v-dialog(ref='dialog' v-model='modal' :return-value.sync='date' persistent='' width='290px')
                 template(v-slot:activator='{ on, attrs }')
-                  v-text-field(v-model='start_date' label='Start date' prepend-icon='mdi-calendar' readonly='' v-bind='attrs' v-on='on')
-                v-date-picker(v-model='start_date' scrollable='')
+                  v-text-field(v-model='date' label='Start date' prepend-icon='mdi-calendar' readonly='' v-bind='attrs' v-on='on')
+                v-date-picker(v-model='date' scrollable='')
                   v-spacer
                   v-btn(text='' color='primary' @click='modal = false')
                     | Cancel
-                  v-btn(text='' color='primary' @click='$refs.dialog.save(start_date)')
+                  v-btn(text='' color='primary' @click='$refs.dialog.save(date)')
                     | OK
-              v-dialog(ref='dialog2' v-model='modal2' :return-value.sync='end_date' persistent='' width='290px')
+              v-dialog(ref='dialogStartTime' v-model='modalStartTime' :return-value.sync='start_time' persistent='' width='290px')
                 template(v-slot:activator='{ on, attrs }')
-                  v-text-field(v-model='end_date' label='End date' prepend-icon='mdi-calendar' readonly='' v-bind='attrs' v-on='on')
-                v-date-picker(v-model='end_date' scrollable='')
+                  v-text-field(v-model='start_time' label='Start Time' prepend-icon='mdi-clock-time-four-outline' readonly='' v-bind='attrs' v-on='on')
+                v-time-picker(v-if='modalStartTime' v-model='start_time' full-width='' format="24hr")
                   v-spacer
-                  v-btn(text='' color='primary' @click='modal2 = false')
+                  v-btn(text='' color='primary' @click='modalStartTime = false')
                     | Cancel
-                  v-btn(text='' color='primary' @click='$refs.dialog2.save(end_date)')
+                  v-btn(text='' color='primary' @click='$refs.dialogStartTime.save(start_time)')
                     | OK
+
+              v-dialog(ref='dialogEndTime' v-model='modalEndTime' :return-value.sync='end_time' persistent='' width='290px')
+                template(v-slot:activator='{ on, attrs }')
+                  v-text-field(v-model='end_time' label='End Time' prepend-icon='mdi-clock-time-four-outline' readonly='' v-bind='attrs' v-on='on')
+                v-time-picker(v-if='modalEndTime' v-model='end_time' full-width='' format="24hr")
+                  v-spacer
+                  v-btn(text='' color='primary' @click='modalEndTime = false')
+                    | Cancel
+                  v-btn(text='' color='primary' @click='$refs.dialogEndTime.save(end_time)')
+                    | OK
+
               v-select(v-model='day_of_the_week' :items='items' label='Day of the Week' multiple='')
                 template(v-slot:selection='{ item, index }')
                   v-chip
@@ -55,35 +66,41 @@ import {mapActions} from 'vuex'
 export default {
     name: 'Login',
     data: () => ({
-      start_date:'',
-      end_date:'',
+      date:'',
+      start_time:'',
+      end_time:'',
       name:'',
       description:'',
       modal: false,
-      modal2: false,
+      modalStartTime: false,
+      modalEndTime: false,
       items: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
       day_of_the_week:''
 
     }),
     methods:{
-      ...mapActions(['loginUser']),
+      ...mapActions(['createEvent']),
       submit(){
-        this.loginUser({email:this.email,password:this.password})
-        .then(() => {
-          return this.$router.push({name:'Home'})
+        this.createEvent({
+          date:this.date,
+          start_time:this.start_time,
+          end_time:this.end_time,
+          name:this.name,
+          description:this.description,
+          day_of_the_week:this.day_of_the_week
         })
         .then(() => {
           this.$store.commit('updateSnackbar', {
             show:true,
             variant:'success',
-            message:'Login successful'
+            message:'Event Created'
           })
         })
         .catch(() => {
           this.$store.commit('updateSnackbar', {
             show:true,
             variant:'error',
-            message:'Login Failed'
+            message:'Event Creation Failed'
           })
         })
       }

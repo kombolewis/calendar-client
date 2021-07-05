@@ -8,8 +8,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
 const state = {
     id_no: '',
     token: localStorage.getItem('access_token') || null,
-    allAccounts: null,
-		userInfo:null,
+    UserSchedule: '',
 		show:false,
 		variant:'',
 		message:''
@@ -20,17 +19,24 @@ const state = {
 const getters = {
     getId: () => state.id_no,
     isLoggedIn: () => state.token != null,
-    getAllAccounts: () => state.allAccounts,
+    getUserSchedule: () => state.UserSchedule,
 		loggedinUserInfo: () => state.userInfo,
 		checkShow: () => state.show,
 		checkVariant: () => state.variant,
-		checkMessage: () => state.message
+		checkMessage: () => state.message,
+
 
 };
 
 const actions = {
 
-
+	
+	async getSchedule({commit,state}) {
+		axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
+		const response = await axios.get('/getSchedule');  
+		
+		commit('setUserSchedule', response.data)
+	},
 
 	loginUser({commit},data) {
 		return new Promise((resolve, reject) => {
@@ -63,7 +69,21 @@ const actions = {
 		})
 
 	},
+	createEvent({commit},data) {
+		axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
+		return new Promise((resolve, reject) => {
+			axios.post('/event', data)
+			.then(response => {
+				if(response.status == 201){
+						resolve(response.data)
+						commit()
+				}
+			}).catch(err => {
+					reject(err)
+			})
+		})
 
+	},
    
 	logoutUser({commit,state,getters}) {
 			axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
@@ -168,7 +188,7 @@ const mutations = {
     setCustomerId: (state, data) => (state.id_no = data),
     setToken: (state, data) => (state.token = data),
     setAccounts: (state, data) => (state.allAccounts = data),
-    setUserInfo: (state, data) => (state.userInfo = data),
+    setUserSchedule: (state, data) => (state.UserSchedule = data),
 		removeToken: (state) => (state.token = null),
 		updateSnackbar: (state,data) =>  {
       state.message = data.message

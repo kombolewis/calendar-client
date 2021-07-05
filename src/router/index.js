@@ -21,7 +21,9 @@ const routes = [
   {
     path: '/event',
     name: 'Event',
-    component: () => import('../components/Event')
+    component: () => import('../components/Event'),
+    meta:{requiresAuth:true}
+
   },
   {
     path: '/',
@@ -29,6 +31,7 @@ const routes = [
     component: Home,
     meta:{requiresAuth:true}
   },
+
 ]
 
 const router = new VueRouter({

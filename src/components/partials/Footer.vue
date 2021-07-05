@@ -12,7 +12,7 @@
 				| {{ link.label }}
 			v-col.primary.lighten-2.py-4.text-center.white--text(cols='12')
 				| {{ new Date().getFullYear() }} &mdash; 
-				strong NEOWS
+				strong EVSCRT
 
 </template>
 

@@ -46,13 +46,14 @@ export default {
           url:'/'
         },
         {
+          label: 'Event',
+          url: '/event'
+        },
+        {
           label: this.$store.getters.isLoggedIn ? 'Logout':'Login',
           url:'/login'
         },
-        {
-          label: 'Event',
-          url: '/event'
-        }
+
       ]
     },
   },

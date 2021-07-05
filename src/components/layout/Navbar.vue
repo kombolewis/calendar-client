@@ -1,6 +1,6 @@
 <template lang="pug">
 	v-app-bar(app color="primary" dark)
-		v-toolbar-title.font-weight-bold NEOWS
+		v-toolbar-title.font-weight-bold EVSCRT
 		v-spacer
 		v-btn(
 			v-for="link in links"
