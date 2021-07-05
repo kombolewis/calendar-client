@@ -91,9 +91,13 @@ const actions = {
 					return new Promise((resolve, reject) => {
 							axios.post('/logout')
 							.then(response => {
+								if(response.status == 200){
 									localStorage.removeItem('access_token')
 									commit('removeToken')
 									resolve(response.data)
+								}else{
+									throw new Error('something went wrong')
+								}
 							}).catch(err => {
 									localStorage.removeItem('access_token')
 									commit('removeToken')

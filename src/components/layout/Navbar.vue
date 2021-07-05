@@ -28,16 +28,14 @@ export default {
 			logout(){
 				this.$store.dispatch('logoutUser')
 				.then(() => {
-					return this.$router.push({name:'Login'})
-				})
-				.then(() => {
 					this.$store.commit('updateSnackbar', {
             show:true,
             variant:'success',
             message:'Logout successful'
           })
 				})
-				.catch(() => {
+				.catch((err) => {
+					console.log(err)
 					this.$store.commit('updateSnackbar', {
             show:true,
             variant:'error',
