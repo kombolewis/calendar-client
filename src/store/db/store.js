@@ -1,12 +1,9 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
-
-
+axios.defaults.baseURL = 'https://calend-serve-app.herokuapp.com/api'
 
 
 const state = {
-    id_no: '',
     token: localStorage.getItem('access_token') || null,
     UserSchedule: '',
 		show:false,
@@ -17,10 +14,8 @@ const state = {
 };
 
 const getters = {
-    getId: () => state.id_no,
     isLoggedIn: () => state.token != null,
     getUserSchedule: () => state.UserSchedule,
-		loggedinUserInfo: () => state.userInfo,
 		checkShow: () => state.show,
 		checkVariant: () => state.variant,
 		checkMessage: () => state.message,
@@ -60,10 +55,13 @@ const actions = {
 			axios.post('/register', data)
 			.then(response => {
 					if(response.status == 201){
-						dispatch('loginUser', {email:data.email,password:data.password})
-						resolve(response.data)
+						return dispatch('loginUser', {email:data.email,password:data.password})
 					}
-			}).catch(err => {
+			})
+			.then((resp) => {
+				resolve(resp.data)
+			})
+			.catch(err => {
 					reject(err)
 			})
 		})
@@ -106,92 +104,12 @@ const actions = {
 					})
 			}
 	},
-	resetUserPassword(context,data) {
-			return new Promise((resolve, reject) => {
-					axios.post('/setPassword', {
-							id_no:data.id_no,
-							password:data.password
-					})
-					.then(response => {
-							resolve(response.data)
-					}).catch(err => {
-							console.log(err)
-							reject(err)
-					})
-			})
 
-	},
-
-    async requestUserInfo({commit,state}) {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
-        const response = await axios.get('/userInfo');  
-        
-        commit('setUserInfo', response.data)
-    },
-
-    fetchTransactions(context,data) {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
-        return new Promise((resolve, reject) => {
-            axios.post('/fetchTransactions', {
-                member_no:data.member_no,
-                portfolio:data.portfolio
-            })
-            .then(response => {
-                resolve(response.data)
-            }).catch(err => {
-                reject(err)
-            })
-        })
-    },
-
-
-    createAccount(context,data) {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
-        return new Promise((resolve, reject) => {
-            axios.post('/register', data)
-            .then(response => {
-                resolve(response.data)
-            }).catch(err => {
-                reject(err)
-            })
-        })
-    },
-
-    getNav(context, data) {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
-        return new Promise((resolve, reject) => {
-            axios.post('/fetchNav', {
-                portfolio:data.portfolio
-            })
-            .then(response => {
-                resolve(response.data)
-            }).catch(err => {
-                reject(err)
-            })
-        })
-    },
-
-    getPDFStatement(context, data) {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + state.token
-        return new Promise((resolve, reject) => {
-            axios.post('/getPDFStatement', {
-                portfolio:data.portfolio,
-                member_no:data.member_no
-            })
-            .then(response => {
-                resolve(response.data)
-            }).catch(err => {
-                reject(err)
-            })
-        })
-    },
 
 };
 
 const mutations = {
-    setCustomerId: (state, data) => (state.id_no = data),
     setToken: (state, data) => (state.token = data),
-    setAccounts: (state, data) => (state.allAccounts = data),
     setUserSchedule: (state, data) => (state.UserSchedule = data),
 		removeToken: (state) => (state.token = null),
 		updateSnackbar: (state,data) =>  {

@@ -87,7 +87,7 @@ export default {
 					lname:this.lname
 				})
 				.then(() => {
-					return this.$router.push({name:'Home'})
+					return this.$router.replace({name:'Home'})
 				})
 				.then(() => {
 					this.$store.commit('updateSnackbar', {
